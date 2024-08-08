@@ -3,27 +3,46 @@
     <div class="shadow">
       <input type="text" v-model="newTodoItem" v-on:keyup.enter="addTodo">
       <button v-on:click="addTodo">add</button>
+      
+      <AlertModal v-if="showModal" @close="showModal = false">
+        <template v-slot:header><h3>경고!!</h3><botton @click="showModal = false">닫기</botton></template>
+        
+        <!-- 3.0이하 표현 -->
+        <!-- <h3 slot="header">경고!!</h3> -->
+
+        <template #body><h3>무언가를 입력하세요.</h3></template>
+        <template #footer><h3>copy right</h3></template>
+      </AlertModal>
     </div>
 </template>
 <script>
+import AlertModal from './common/AlertModal.vue'
+
 export default {
     data: function() {
       return {
-        newTodoItem : ""
+        newTodoItem : "",
+        showModal : false,
       }
     },
 
     methods: {
       addTodo : function() {
-        console.log(this.newTodoItem);
-        var obj = {completed:false, item:this.newTodoItem};
-        localStorage.setItem(this.newTodoItem, JSON.stringify(obj));
-        this.clearInput();
+        if(this.newTodoItem != '') {
+          this.$emit('addTodoItem', this.newTodoItem);
+          this.clearInput();
+        }else {
+          this.showModal = !this.showModal;
+        }
       },
       
       clearInput: function() {
         this.newTodoItem = "";
-      },
+      }, 
+    },
+
+    components : {
+      AlertModal : AlertModal,
     }
 }
 </script>

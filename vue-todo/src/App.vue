@@ -5,6 +5,39 @@ import TodoList from './components/TodoList.vue'
 import TodoFooter from './components/TodoFooter.vue'
 
 export default {
+  data : function() {
+    return {
+      todoItems : [],
+    }
+  },
+  created : function() {
+    if(localStorage.length > 0) {
+      for (let index = 0; index < localStorage.length; index++) {
+        console.log(JSON.parse(localStorage.getItem(localStorage.key(index))));
+        this.todoItems.push(JSON.parse(localStorage.getItem(localStorage.key(index))));
+      }
+    }
+  },
+  methods: {
+    addOneItem : function(todoItem) {
+      var obj = {completed:false, item:todoItem};
+      localStorage.setItem(todoItem, JSON.stringify(obj));
+      this.todoItems.push(obj);
+    },
+    removeOneItem : function(todoItem, index) {
+        localStorage.removeItem(todoItem.item);
+        this.todoItems.splice(index, 1);
+    },
+    toggleOneItem : function(todoItem) {
+        localStorage.removeItem(todoItem.item);
+        localStorage.setItem(todoItem.item, JSON.stringify(todoItem));
+    },
+    clearAllItems : function() {
+      localStorage.clear();
+      this.todoItems = [];
+    },
+  },
+
   components : {
     'TodoHeader' : TodoHeader,
     'TodoInput' : TodoInput,
@@ -16,9 +49,9 @@ export default {
 
 <template>
   <TodoHeader></TodoHeader>
-  <TodoInput></TodoInput>
-  <TodoList></TodoList>
-  <TodoFooter></TodoFooter>
+  <TodoInput v-on:addTodoItem="addOneItem"></TodoInput>
+  <TodoList v-bind:propsdata="todoItems" v-on:removeItem="removeOneItem" v-on:toggleItem="toggleOneItem"></TodoList>
+  <TodoFooter v-on:clearAll="clearAllItems"></TodoFooter>
 </template>
 
 <style>

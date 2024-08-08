@@ -1,44 +1,36 @@
 <!-- vueInit -->
 <template lang="">
     <div>
-      <ul>
-        <li v-for="(todoItem, index) in todoItems" v-bind:key="todoItem.item" class="shadow">
+      <transition-group name="list" tag="ul">
+        <li v-for="(todoItem, index) in propsdata" v-bind:key="todoItem.item" class="shadow">
           <button v-on:click="toggleComplete(todoItem, index)">check</button>
           {{todoItem.item}}
           <button v-on:click="removeTodo(todoItem, index)">remove</button>
         </li>
-
-      </ul>  
+      </transition-group>  
     </div>
 </template>
 <script>
 export default {
-    data : function () {
-      return {
-        todoItems: [],
-      }
-    },
-    created : function() {
-      if(localStorage.length > 0) {
-        for (let index = 0; index < localStorage.length; index++) {
-          console.log(JSON.parse(localStorage.getItem(localStorage.key(index))));
-          this.todoItems.push(JSON.parse(localStorage.getItem(localStorage.key(index))));
-        }
-      }
-    },
+    props: ['propsdata'],
     methods: {
       removeTodo : function(todoItem, index) {
-        console.log(todoItem, index);
-        localStorage.removeItem(todoItem);
-        this.todoItems.splice(index, 1);
+        this.$emit("removeItem", todoItem, index);
       },
       toggleComplete : function(todoItem) {
-
-        localStorage.removeItem(todoItem.item);
-        localStorage.setItem(todoItem.item, JSON.stringify(todoItem));
+        this.$emit("toggleItem", todoItem);
       }
     },
 }
 </script>
-<style lang="">
+<style>
+/* transition css */
+.list-enter-active, .list-leave-active {
+  transition: all 1s;
+}
+/* list-enter(vue2) */
+.list-enter-from, .list-leave-to /* .list-leave-active below version 2.1.8 */ {
+  opacity: 0;
+  transform: translateY(30px);
+}
 </style>
