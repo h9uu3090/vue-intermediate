@@ -7,7 +7,7 @@
           {{todoItem.item}}
           <button v-on:click="removeTodo(todoItem, index)">remove</button>
         </li>
-      </transition-group>  
+      </transition-group>   
     </div>
 </template>
 <script>
