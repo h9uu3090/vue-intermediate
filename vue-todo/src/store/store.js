@@ -9,6 +9,7 @@ export default store = new Vuex.Store({
     }
 });
 */
+
 import { createStore } from 'vuex';
 
 const storage = {
@@ -28,7 +29,26 @@ export default createStore({
   state:{
     todoItems : storage.fetch(),
   },
-  mutations: {},
+  mutations: {
+    addOneItem(state, todoItem) {
+      const obj = {completed:false, item:todoItem};
+      localStorage.setItem(todoItem, JSON.stringify(obj));
+      state.todoItems.push(obj);
+    },
+    removeOneItem(state, payload) {
+        localStorage.removeItem(payload.todoItem.item);
+        state.todoItems.splice(payload.index, 1);
+    },
+    toggleOneItem(state, todoItem) {
+        todoItem.completed = !todoItem.completed;
+        localStorage.removeItem(todoItem.item);
+        localStorage.setItem(todoItem.item, JSON.stringify(todoItem));
+    },
+    clearAllItems(state) {
+      localStorage.clear();
+      state.todoItems = [];
+    },
+  },
   actions: {},
   getters: {}
 })

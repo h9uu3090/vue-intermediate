@@ -12,13 +12,12 @@
 </template>
 <script>
 export default {
-    props: ['propsdata'],
     methods: {
       removeTodo : function(todoItem, index) {
-        this.$emit("removeItem", todoItem, index);
+        this.$store.commit('removeOneItem', {todoItem, index});
       },
       toggleComplete : function(todoItem) {
-        this.$emit("toggleItem", todoItem);
+        this.$store.commit('toggleOneItem', todoItem);
       }
     },
 }
